@@ -8,6 +8,9 @@ module.exports = {
     'eslint:recommended',
     '@vue/eslint-config-prettier/skip-formatting'
   ],
+  rules: {
+    "vue/comment-directive": 0
+  },
   parserOptions: {
     ecmaVersion: 'latest'
   }
