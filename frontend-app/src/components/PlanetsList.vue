@@ -13,11 +13,9 @@ export default {
     }
   },
   mounted() {
-    console.log('planets mounted');
     const data = getPlanets();
     data.then((res) => {
       this.planets = res;
-      console.log(this.planets);
     })
     .catch((e) => {
       console.error('Error: ', e);
