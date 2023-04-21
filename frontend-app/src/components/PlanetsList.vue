@@ -13,6 +13,7 @@ export default {
       storageType: 'sessionStorage',
       storagePlanetsKey: 'planets',
       title: 'Planets:',
+      loadingText: 'Loading...',
     }
   },
   methods: {
@@ -54,7 +55,7 @@ export default {
     </li>
   </div>
   <div class="loading" v-else>
-    <p>Loading...</p>
+    <p>{{ loadingText }}</p>
   </div>
 </template>
 
