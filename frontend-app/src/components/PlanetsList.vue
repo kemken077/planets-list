@@ -1,11 +1,11 @@
 <script>
-import PlanetItem from './PlanetItem.vue';
+import PlanetsGrid from './PlanetsGrid.vue';
 import { getPlanets } from '../services/PlanetService';
 import { isDataStoragePopulated } from '../services/SessionStorageService';
 
 export default {
   components: {
-    PlanetItem,
+    PlanetsGrid,
   },
   data() {
     return {
@@ -54,9 +54,7 @@ export default {
 <template>
   <h1>{{ title }}</h1>
   <div class="planets" v-if="isPlanetsArrayLengthLargerThanZero">
-    <li v-for="(planet, index) in planets" :key="index">
-      <PlanetItem :name="planet.name" />
-    </li>
+    <PlanetsGrid :items="planets" />
   </div>
   <div class="loading" v-else>
     <p>{{ loadingText }}</p>
