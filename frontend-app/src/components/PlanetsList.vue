@@ -1,6 +1,7 @@
 <script>
 import PlanetItem from './PlanetItem.vue';
 import { getPlanets } from '../services/PlanetService';
+import { isDataStoragePopulated } from '../services/SessionStorageService';
 
 export default {
   components: {
@@ -9,25 +10,37 @@ export default {
   data() {
     return {
       planets: [],
+      storageType: 'sessionStorage',
+      storagePlanetsKey: 'planets',
       title: 'Planets:',
     }
   },
+  methods: {
+    loadPlanetsData() {
+      if (isDataStoragePopulated(this.storageType)) {
+        const parsed = JSON.parse(sessionStorage.getItem(this.storagePlanetsKey));
+        this.planets = parsed;
+      } else {
+        const data = getPlanets();
+        data.then((res) => {
+          this.planets = res;
+          const stringyfied = JSON.stringify(this.planets);
+          sessionStorage.setItem(this.storagePlanetsKey, stringyfied);
+        })
+        .catch((e) => {
+          console.error('Error: ', e);
+        });
+      }
+    }
+  },
   mounted() {
-    const data = getPlanets();
-    data.then((res) => {
-      this.planets = res;
-    })
-    .catch((e) => {
-      console.error('Error: ', e);
-    });
+    this.loadPlanetsData();
   },
   computed: {
     isPlanetsArrayLengthLargerThanZero() {
-      return this.planets.length > 0;
+      return this.planets ? this.planets.length > 0 : false;
     },
   },
-  methods: {
-  }
 }
 
 

@@ -21,6 +21,23 @@ function storageAvailable(type) {
   }
 }
 
-export default function isStorageAvailable(type) {
+function isStorageAvailable(type) {
   return storageAvailable(type);
+}
+
+export function isDataStoragePopulated(type, searchItem = 'planets') {
+  let areItemsAvailable;
+  if (isStorageAvailable(type)) {
+    const storedItems = sessionStorage.getItem(searchItem);
+    if (storedItems) {
+      var storedArrayLength = storedItems.length;
+    }
+    const arrayLengthLargerThanZero = storedArrayLength > 0;
+    if (arrayLengthLargerThanZero) {
+      areItemsAvailable = true;
+    } else {
+      areItemsAvailable = false;
+    }
+  }
+  return areItemsAvailable;
 }
