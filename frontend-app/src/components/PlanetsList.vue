@@ -21,6 +21,11 @@ export default {
       console.error('Error: ', e);
     });
   },
+  computed: {
+    isPlanetsArrayLengthLargerThanZero() {
+      return this.planets.length > 0;
+    },
+  },
   methods: {
   }
 }
@@ -30,7 +35,7 @@ export default {
 
 <template>
   <h1>{{ title }}</h1>
-  <div class="planets" v-if="planets.length > 0">
+  <div class="planets" v-if="isPlanetsArrayLengthLargerThanZero">
     <li v-for="(planet, index) in planets" :key="index">
       <PlanetItem :name="planet.name" />
     </li>
