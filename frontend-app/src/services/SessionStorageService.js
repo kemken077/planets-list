@@ -32,9 +32,13 @@ export function isDataStoragePopulated(type, searchItem = 'planets') {
     if (storedItems) {
       var storedArrayLength = storedItems.length;
     }
-    const arrayLengthLargerThanZero = storedArrayLength > 0;
-    if (arrayLengthLargerThanZero) {
-      areItemsAvailable = true;
+    if (storedArrayLength) {
+      const arrayLengthLargerThanZero = storedArrayLength > 0;
+      if (arrayLengthLargerThanZero) {
+        areItemsAvailable = true;
+      } else {
+        areItemsAvailable = false;
+      }
     } else {
       areItemsAvailable = false;
     }
