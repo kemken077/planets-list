@@ -17,20 +17,26 @@ export default {
     }
   },
   methods: {
+    getAvailableData() {
+      const storage = sessionStorage.getItem(this.storagePlanetsKey);
+      this.planets = JSON.parse(storage);
+    },
+    requestData() {
+      const data = getPlanets();
+      data.then((res) => {
+        this.planets = res;
+        const stringyfied = JSON.stringify(this.planets);
+        sessionStorage.setItem(this.storagePlanetsKey, stringyfied);
+      })
+      .catch((e) => {
+        console.error('Error: ', e);
+      });
+    },
     loadPlanetsData() {
       if (isDataStoragePopulated(this.storageType)) {
-        const storage = sessionStorage.getItem(this.storagePlanetsKey);
-        this.planets = JSON.parse(storage);
+        this.getAvailableData();
       } else {
-        const data = getPlanets();
-        data.then((res) => {
-          this.planets = res;
-          const stringyfied = JSON.stringify(this.planets);
-          sessionStorage.setItem(this.storagePlanetsKey, stringyfied);
-        })
-        .catch((e) => {
-          console.error('Error: ', e);
-        });
+        this.requestData();
       }
     }
   },
@@ -43,8 +49,6 @@ export default {
     },
   },
 }
-
-
 </script>
 
 <template>
@@ -60,10 +64,10 @@ export default {
 </template>
 
 <style scoped>
-ul {
-  list-style-type: none;
-}
-.loading p {
-  color: #FFFFFF;
-}
+  ul {
+    list-style-type: none;
+  }
+  .loading p {
+    color: #FFFFFF;
+  }
 </style>
