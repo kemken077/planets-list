@@ -19,8 +19,8 @@ export default {
   methods: {
     loadPlanetsData() {
       if (isDataStoragePopulated(this.storageType)) {
-        const parsed = JSON.parse(sessionStorage.getItem(this.storagePlanetsKey));
-        this.planets = parsed;
+        const storage = sessionStorage.getItem(this.storagePlanetsKey);
+        this.planets = JSON.parse(storage);
       } else {
         const data = getPlanets();
         data.then((res) => {
