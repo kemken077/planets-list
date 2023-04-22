@@ -2,16 +2,10 @@
 export default {
   props: {
     text: String,
-    ctaURL: String,
-  },
-  data() {
-    return {  
-    };
   },
   methods: {
-    handleMoreClick(e) {
-      console.log('Click [more+]');
-      console.log(e.target);
+    handleMoreClick() {
+      this.$emit('moreClicked');
     }
   },
 }
@@ -33,5 +27,6 @@ export default {
   border: 1px solid pink;
   background-color: transparent;
   padding: 20px 10px;
+  cursor: pointer;
 }
 </style>

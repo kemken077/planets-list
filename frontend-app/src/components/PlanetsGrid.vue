@@ -1,10 +1,8 @@
 <script>
 import PlanetItem from '../components/PlanetItem.vue';
-import MoreButton from '../components/MoreButton.vue';
 export default {
   components: {
     PlanetItem,
-    MoreButton,
   },
   props: {
     items: Array,
@@ -20,7 +18,6 @@ export default {
     <li v-for="(item, index) in items" :key="index">
       <PlanetItem :name="item.name" />
     </li>
-    <MoreButton :text="'+more'" />
   </ul>
 </template>
 
