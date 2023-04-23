@@ -1,40 +1,62 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import PlanetsGrid from './PlanetsGrid.vue';
-import { getPlanets, getData } from '../services/PlanetService';
+import MoreButton from './MoreButton.vue';
+import { getData } from '../services/PlanetService';
 import { isDataStoragePopulated } from '../services/SessionStorageService';
 import { useListStore } from '../stores/ListStore';
 
 const store = useListStore();
-var planets = ref([]);
 const storageType = 'sessionStorage'
-const storagePlanetsKey = 'planets';
 const title =  'Planets:';
 const loadingText = 'Loading...';
+const initialRequestUrl = 'https://swapi.dev/api/planets/';
+const haveMorePlanetsToLoad = ref(true);
 
-// computed
+// Computed
+const planets = computed(() => {
+  return store.planets;
+});
 const isPlanetsArrayLengthLargerThanZero = computed(() => {
-  return planets.value.length ? planets.value.length > 0 : false;
+  return store.planets.length > 0;
 });
 
-function getAvailableData() {
-  console.log('Get available data...');
-  const storage = sessionStorage.getItem(storagePlanetsKey);
-  console.log({storage})
-  planets = JSON.parse(storage);
+function mutateState(items, prevUrl, nextUrl) {
+  store.addItems(items, true);
+  store.setUrl(prevUrl);
+  store.setUrl(nextUrl, false);
 }
 
-function requestData() {
-  console.log('Request data...');
-  const data = getPlanets();
+function getAvailableData() {
+  const storage = store.getItems;
+  const prevUrl = store.getPrevUrl;
+  const nextUrl = store.getNextUrl;
+  mutateState(JSON.parse(storage), prevUrl, nextUrl);
+}
+
+function makeRequest(url) {
+  const data = getData(url);
   data.then((res) => {
-    planets = res.results;
-    const stringyfied = JSON.stringify(planets);
-    sessionStorage.setItem(storagePlanetsKey, stringyfied);
+    const { results, previous, next } = res;
+    console.log({res});
+    if (!next) { 
+      haveMorePlanetsToLoad.value = false;
+      console.warn(`Next page url = ${next}, can't make the request...`);
+    }
+    mutateState(results, previous, next);
   })
   .catch((e) => {
     console.error('Error: ', e);
   });
+}
+
+function requestData() {
+  makeRequest(initialRequestUrl);
+}
+
+function loadMorePlanets() {
+  const morePlanetsUrl = store.nextUrl;
+  makeRequest(morePlanetsUrl);
 }
 
 function loadPlanetsData() {
@@ -49,83 +71,15 @@ onMounted(() => {
   loadPlanetsData();
 });
 
-
-// export default {
-//   setup() {
-//     const store = useListStore();
-
-//     return {
-//       store,
-//     }
-//   },
-//   components: {
-//     PlanetsGrid,
-//   },
-//   data() {
-//     return {
-//       planets: [],
-//       storageType: 'sessionStorage',
-//       storagePlanetsKey: 'planets',
-//       title: 'Planets:',
-//       loadingText: 'Loading...',
-//     }
-//   },
-//   methods: {
-//     getAvailableData() {
-//       console.log('Get available data...');
-//       const storage = sessionStorage.getItem(this.storagePlanetsKey);
-//       this.planets = JSON.parse(storage);
-//     },
-//     requestData() {
-//       console.log('Request data...');
-//       const data = getPlanets();
-//       data.then((res) => {
-//         this.planets = res.results;
-//         const stringyfied = JSON.stringify(this.planets);
-//         sessionStorage.setItem(this.storagePlanetsKey, stringyfied);
-//       })
-//       .catch((e) => {
-//         console.error('Error: ', e);
-//       });
-//     },
-//     loadPlanetsData() {
-//       if (isDataStoragePopulated(this.storageType)) {
-//         this.getAvailableData();
-//       } else {
-//         this.requestData();
-//       }
-//     },
-//     loadMorePlanets() {
-//       console.log('Load more planets!');
-//       const morePlanets = getData(this.nextUrl);
-//       morePlanets.then((res) => {
-//         try {
-//           console.log('response OK...');
-//           this.store.addItems(res.results);
-//           this.store.setUrl(res.previous);
-//           this.store.setUrl(res.next, false);
-//         } catch (e) {
-//           console.error('Error: ', e);
-//         }
-//       });
-//     },
-//   },
-//   mounted() {
-//     this.loadPlanetsData();
-//   },
-//   computed: {
-//     isPlanetsArrayLengthLargerThanZero() {
-//       return this.planets ? this.planets.length > 0 : false;
-//     },
-//   },
-// }
 </script>
 
 <template>
   <h1>{{ title }}</h1>
   <div class="planets" v-if="isPlanetsArrayLengthLargerThanZero">
     <PlanetsGrid :items="planets" />
-    <MoreButton @more-clicked="loadMorePlanets" :text="'+more'" />
+    <div class="more-wrapper" v-if="haveMorePlanetsToLoad">
+      <MoreButton @more-clicked="loadMorePlanets" :text="'+more'" />
+    </div>
   </div>
   <div class="loading" v-else>
     <p>{{ loadingText }}</p>

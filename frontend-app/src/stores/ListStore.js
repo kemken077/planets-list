@@ -16,16 +16,16 @@ export const useListStore = defineStore('list', {
           this.planets.push(item);
         });
       }
-      const stringyfied = JSON.stringify(this.planets);
+      const stringyfied = JSON.stringify(items);
 -     sessionStorage.setItem(this.storagePlanetsKey, stringyfied);
     },
     setUrl(url, isPrev = true) {
       if (isPrev) {
         this.prevUrl = url;
-        sessionStorage.setItem('prevUrl', this.prevUrl);
+        sessionStorage.setItem('prevUrl', url);
       } else {
         this.nextUrl = url;
-        sessionStorage.setItem('nextUrl', this.nextUrl);
+        sessionStorage.setItem('nextUrl', url);
       }
     },
     reset() {
@@ -35,14 +35,14 @@ export const useListStore = defineStore('list', {
     }
   },
   getters: {
-    currentItems(state) {
-      return state.planets;
+    getItems: () => {
+      return sessionStorage.getItem('planets');
     } ,
-    getNextUrl(state) {
-      return state.nextUrl;
+    getNextUrl: () => {
+      return sessionStorage.getItem('nextUrl');
     },
-    getPrevUrl(state) {
-      return state.prevUrl;
+    getPrevUrl: () => {
+      return sessionStorage.getItem('prevUrl');
     },
   }
 });
