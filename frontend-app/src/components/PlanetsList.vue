@@ -12,6 +12,7 @@ const title =  'Planets:';
 const loadingText = 'Loading...';
 const initialRequestUrl = 'https://swapi.dev/api/planets/';
 const haveMorePlanetsToLoad = ref(true);
+const havePreviousPlanetsToLoad = ref(false);
 
 // Computed
 const planets = computed(() => {
@@ -39,9 +40,17 @@ function makeRequest(url) {
   data.then((res) => {
     const { results, previous, next } = res;
     console.log({res});
-    if (!next) { 
+    if (!next || next === 'null') {
       haveMorePlanetsToLoad.value = false;
       console.warn(`Next page url = ${next}, can't make the request...`);
+    } else {
+      haveMorePlanetsToLoad.value = true;
+    }
+    if (!previous || previous === 'null') {
+      havePreviousPlanetsToLoad.value = false;
+      console.warn(`Previous page url = ${previous}, can't make the request...`);
+    } else {
+      havePreviousPlanetsToLoad.value = true;
     }
     mutateState(results, previous, next);
   })
@@ -67,6 +76,11 @@ function loadPlanetsData() {
   }
 }
 
+function loadPreviousPlanets() {
+  const previousPlanetsUrl = store.prevUrl;
+  makeRequest(previousPlanetsUrl);
+}
+
 onMounted(() => {
   loadPlanetsData();
 });
@@ -79,6 +93,9 @@ onMounted(() => {
     <PlanetsGrid :items="planets" />
     <div class="more-wrapper" v-if="haveMorePlanetsToLoad">
       <MoreButton @more-clicked="loadMorePlanets" :text="'+more'" />
+    </div>
+    <div class="previous-wrapper" v-if="havePreviousPlanetsToLoad">
+      <button @click="loadPreviousPlanets">Previous</button>
     </div>
   </div>
   <div class="loading" v-else>
