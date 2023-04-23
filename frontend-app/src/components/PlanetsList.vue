@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, computed, ref } from 'vue';
 import PlanetsGrid from './PlanetsGrid.vue';
-import MoreButton from './MoreButton.vue';
+import LoadButton from './LoadButton.vue';
 import { getData } from '../services/PlanetService';
 import { isDataStoragePopulated } from '../services/SessionStorageService';
 import { useListStore } from '../stores/ListStore';
@@ -39,7 +39,6 @@ function makeRequest(url) {
   const data = getData(url);
   data.then((res) => {
     const { results, previous, next } = res;
-    console.log({res});
     if (!next || next === 'null') {
       haveMorePlanetsToLoad.value = false;
       console.warn(`Next page url = ${next}, can't make the request...`);
@@ -68,17 +67,17 @@ function loadMorePlanets() {
   makeRequest(morePlanetsUrl);
 }
 
+function loadPreviousPlanets() {
+  const previousPlanetsUrl = store.prevUrl;
+  makeRequest(previousPlanetsUrl);
+}
+
 function loadPlanetsData() {
   if (isDataStoragePopulated(storageType)) {
     getAvailableData();
   } else {
     requestData();
   }
-}
-
-function loadPreviousPlanets() {
-  const previousPlanetsUrl = store.prevUrl;
-  makeRequest(previousPlanetsUrl);
 }
 
 onMounted(() => {
@@ -92,10 +91,10 @@ onMounted(() => {
   <div class="planets" v-if="isPlanetsArrayLengthLargerThanZero">
     <PlanetsGrid :items="planets" />
     <div class="more-wrapper" v-if="haveMorePlanetsToLoad">
-      <MoreButton @more-clicked="loadMorePlanets" :text="'+more'" />
+      <LoadButton @load-clicked="loadMorePlanets" :text="'+more'" />
     </div>
     <div class="previous-wrapper" v-if="havePreviousPlanetsToLoad">
-      <button @click="loadPreviousPlanets">Previous</button>
+      <LoadButton @load-clicked="loadPreviousPlanets" :text="'-previous'" />
     </div>
   </div>
   <div class="loading" v-else>

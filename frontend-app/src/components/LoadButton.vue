@@ -4,25 +4,25 @@ export default {
     text: String,
   },
   methods: {
-    handleMoreClick() {
-      this.$emit('moreClicked');
+    handleLoadClick() {
+      this.$emit('loadClicked');
     }
   },
 }
 </script>
 
 <template>
-  <li class="more" @click="handleMoreClick">
+  <li class="load" @click="handleLoadClick">
     {{ text }}
   </li>
 </template>
 
 <style scoped>
-.more {
+.load {
   color: rgba(235, 235, 235, 0.64);
   background-color: #181818;
 }
-.more:hover {
+.load:hover {
   color: pink;
   border: 1px solid pink;
   background-color: transparent;
