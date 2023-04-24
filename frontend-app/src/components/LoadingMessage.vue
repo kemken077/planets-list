@@ -14,6 +14,6 @@ export default {
 
 <style scoped>
 .loading p {
-    color: #FFFFFF;
+  color: #FFFFFF;
 }
 </style>
