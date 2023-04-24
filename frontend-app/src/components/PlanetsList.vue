@@ -77,7 +77,7 @@ function loadPlanetsData() {
 }
 
 function getPreviousPlanets() {
-  makeRequest(store.prevUrl)
+  makeRequest(store.prevUrl);
 }
 
 function getNextPlanets() {

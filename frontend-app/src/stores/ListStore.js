@@ -6,7 +6,6 @@ export const useListStore = defineStore('list', {
     planets: [],
     prevUrl: '',
     nextUrl: '',
-    requestResponseObjects: new Map(),
     storagePlanetsKey: 'planets',
   }),
   actions: {
@@ -18,8 +17,7 @@ export const useListStore = defineStore('list', {
           this.planets.push(item);
         });
       }
-      const stringyfied = JSON.stringify(items);
--     sessionStorage.setItem(this.storagePlanetsKey, stringyfied);
+-     sessionStorage.setItem(this.storagePlanetsKey, JSON.stringify(items));
     },
     setUrl(url, isPrev = true) {
       if (isPrev) {
