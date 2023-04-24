@@ -2,6 +2,7 @@
 import { onMounted, computed, ref } from 'vue';
 import PlanetsGrid from './PlanetsGrid.vue';
 import LoadButton from './LoadButton.vue';
+import LoadingMessage from './LoadingMessage.vue';
 import { getData } from '../services/PlanetService';
 import { isDataStoragePopulated } from '../services/SessionStorageService';
 import { useListStore } from '../stores/ListStore';
@@ -9,7 +10,6 @@ import { useListStore } from '../stores/ListStore';
 const store = useListStore();
 const storageType = 'sessionStorage'
 const title =  'Planets:';
-const loadingText = 'Loading...';
 const initialRequestUrl = 'https://swapi.dev/api/planets/';
 const haveMorePlanetsToLoad = ref(true);
 const havePreviousPlanetsToLoad = ref(false);
@@ -100,16 +100,9 @@ onMounted(() => {
       <LoadButton @load-clicked="makeRequest(store.prevUrl)" :text="'-previous'" />
     </div>
   </div>
-  <div class="loading" v-else>
-    <p>{{ loadingText }}</p>
+  <div class="loading-wrapper" v-else>
+    <LoadingMessage :message="'Loading...'" />
   </div>
 </template>
 
-<style scoped>
-  ul {
-    list-style-type: none;
-  }
-  .loading p {
-    color: #FFFFFF;
-  }
-</style>
+<style scoped></style>
