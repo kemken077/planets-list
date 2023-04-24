@@ -76,6 +76,14 @@ function loadPlanetsData() {
   }
 }
 
+function getPreviousPlanets() {
+  makeRequest(store.prevUrl)
+}
+
+function getNextPlanets() {
+  makeRequest(store.nextUrl);
+}
+
 function urlIncludesProtocol(protocol, prev = true) {
   const url = prev ? store.prevUrl : store.nextUrl;
   return url.includes(protocol);
@@ -94,10 +102,10 @@ onMounted(() => {
   <div class="planets" v-if="isPlanetsArrayLengthLargerThanZero">
     <PlanetsGrid :items="planets" />
     <div class="more-wrapper" v-if="haveMorePlanetsToLoad">
-      <LoadButton @load-clicked="makeRequest(store.nextUrl)" :text="'+more'" />
+      <LoadButton @load-clicked="getNextPlanets" :text="'+more'" />
     </div>
     <div class="previous-wrapper" v-if="havePreviousPlanetsToLoad">
-      <LoadButton @load-clicked="makeRequest(store.prevUrl)" :text="'-previous'" />
+      <LoadButton @load-clicked="getPreviousPlanets" :text="'-previous'" />
     </div>
   </div>
   <div class="loading-wrapper" v-else>

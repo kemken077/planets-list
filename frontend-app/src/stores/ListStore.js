@@ -6,7 +6,7 @@ export const useListStore = defineStore('list', {
     planets: [],
     prevUrl: '',
     nextUrl: '',
-    requestResponseObjects: [],
+    requestResponseObjects: new Map(),
     storagePlanetsKey: 'planets',
   }),
   actions: {
