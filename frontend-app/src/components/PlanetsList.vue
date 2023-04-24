@@ -76,15 +76,15 @@ function loadPlanetsData() {
   }
 }
 
-function urlIncludesProtocol(prev = true) {
+function urlIncludesProtocol(protocol, prev = true) {
   const url = prev ? store.prevUrl : store.nextUrl;
-  return url.includes('https://');
+  return url.includes(protocol);
 }
 
 onMounted(() => {
   loadPlanetsData();
-  havePreviousPlanetsToLoad.value = urlIncludesProtocol(); // Check if store's prevUrl is populated with an actual URL.
-  haveMorePlanetsToLoad.value = urlIncludesProtocol(false); // Check if store's nextUrl is populated with an actual URL.
+  havePreviousPlanetsToLoad.value = urlIncludesProtocol('https://'); // Check if store's prevUrl is populated with an actual URL.
+  haveMorePlanetsToLoad.value = urlIncludesProtocol('https://', false); // Check if store's nextUrl is populated with an actual URL.
 });
 
 </script>
