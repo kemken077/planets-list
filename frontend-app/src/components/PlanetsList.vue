@@ -35,22 +35,28 @@ function getAvailableData() {
   mutateState(JSON.parse(storage), prevUrl, nextUrl);
 }
 
-function makeRequest(url) {
-  const data = getData(url);
-  data.then((res) => {
-    const { results, previous, next } = res;
-    if (!next || next === 'null') {
+function checkForPrevAndNextUrls(noPreviousUrl, previous, noNextUrl, next) {
+  if (noNextUrl) { // TODO: parse next to avoid checking against string value
       haveMorePlanetsToLoad.value = false;
       console.warn(`Next page url = ${next}, can't make the request...`);
     } else {
       haveMorePlanetsToLoad.value = true;
     }
-    if (!previous || previous === 'null') {
+    if (noPreviousUrl) { // TODO: parse next to avoid checking against string value
       havePreviousPlanetsToLoad.value = false;
       console.warn(`Previous page url = ${previous}, can't make the request...`);
     } else {
       havePreviousPlanetsToLoad.value = true;
     }
+}
+
+function makeRequest(url) {
+  const data = getData(url);
+  data.then((res) => {
+    const { results, previous, next } = res;
+    const noNextUrl =  !next || next === 'null';
+    const noPreviousUrl = !previous || previous === 'null';
+    checkForPrevAndNextUrls(noPreviousUrl, previous, noNextUrl, next);
     mutateState(results, previous, next);
   })
   .catch((e) => {
@@ -60,16 +66,6 @@ function makeRequest(url) {
 
 function requestData() {
   makeRequest(initialRequestUrl);
-}
-
-function loadMorePlanets() {
-  const morePlanetsUrl = store.nextUrl;
-  makeRequest(morePlanetsUrl);
-}
-
-function loadPreviousPlanets() {
-  const previousPlanetsUrl = store.prevUrl;
-  makeRequest(previousPlanetsUrl);
 }
 
 function loadPlanetsData() {
@@ -82,6 +78,7 @@ function loadPlanetsData() {
 
 onMounted(() => {
   loadPlanetsData();
+  havePreviousPlanetsToLoad.value = store.prevUrl.includes('https://'); // Check if store's prevUrl is populated with an actual URL.
 });
 
 </script>
@@ -91,10 +88,10 @@ onMounted(() => {
   <div class="planets" v-if="isPlanetsArrayLengthLargerThanZero">
     <PlanetsGrid :items="planets" />
     <div class="more-wrapper" v-if="haveMorePlanetsToLoad">
-      <LoadButton @load-clicked="loadMorePlanets" :text="'+more'" />
+      <LoadButton @load-clicked="makeRequest(store.nextUrl)" :text="'+more'" />
     </div>
     <div class="previous-wrapper" v-if="havePreviousPlanetsToLoad">
-      <LoadButton @load-clicked="loadPreviousPlanets" :text="'-previous'" />
+      <LoadButton @load-clicked="makeRequest(store.prevUrl)" :text="'-previous'" />
     </div>
   </div>
   <div class="loading" v-else>
