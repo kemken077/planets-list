@@ -29,10 +29,10 @@ function mutateState(items, prevUrl, nextUrl) {
 }
 
 function getAvailableData() {
-  const storage = store.getItems;
-  const prevUrl = store.getPrevUrl;
-  const nextUrl = store.getNextUrl;
-  mutateState(JSON.parse(storage), prevUrl, nextUrl);
+  const storage = JSON.parse(sessionStorage.getItem('planets'));
+  const prevUrl = sessionStorage.getItem('prevUrl');
+  const nextUrl = sessionStorage.getItem('nextUrl');
+  mutateState(storage, prevUrl, nextUrl); // Hydrate state with sessionStorage data on page reload.
 }
 
 function checkForPrevAndNextUrls(noPreviousUrl, previous, noNextUrl, next) {

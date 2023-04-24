@@ -1,3 +1,4 @@
+import { toRaw } from 'vue';
 import { defineStore } from 'pinia';
 
 export const useListStore = defineStore('list', {
@@ -5,6 +6,7 @@ export const useListStore = defineStore('list', {
     planets: [],
     prevUrl: '',
     nextUrl: '',
+    requestResponseObjects: [],
     storagePlanetsKey: 'planets',
   }),
   actions: {
@@ -35,14 +37,8 @@ export const useListStore = defineStore('list', {
     }
   },
   getters: {
-    getItems: () => {
-      return sessionStorage.getItem('planets');
-    } ,
-    getNextUrl: () => {
-      return sessionStorage.getItem('nextUrl');
-    },
-    getPrevUrl: () => {
-      return sessionStorage.getItem('prevUrl');
-    },
+    getItems: (state) => toRaw(state.planets),
+    getNextUrl: (state) => state.nextUrl,
+    getPrevUrl: (state) => state.prevUrl,
   }
 });
