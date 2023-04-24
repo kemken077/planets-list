@@ -76,9 +76,15 @@ function loadPlanetsData() {
   }
 }
 
+function urlIncludesProtocol(prev = true) {
+  const url = prev ? store.prevUrl : store.nextUrl;
+  return url.includes('https://');
+}
+
 onMounted(() => {
   loadPlanetsData();
-  havePreviousPlanetsToLoad.value = store.prevUrl.includes('https://'); // Check if store's prevUrl is populated with an actual URL.
+  havePreviousPlanetsToLoad.value = urlIncludesProtocol(); // Check if store's prevUrl is populated with an actual URL.
+  haveMorePlanetsToLoad.value = urlIncludesProtocol(false); // Check if store's nextUrl is populated with an actual URL.
 });
 
 </script>
