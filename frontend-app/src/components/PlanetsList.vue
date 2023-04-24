@@ -36,13 +36,13 @@ function getAvailableData() {
 }
 
 function checkForPrevAndNextUrls(noPreviousUrl, previous, noNextUrl, next) {
-  if (noNextUrl) { // TODO: parse next to avoid checking against string value
+  if (noNextUrl) {
       haveMorePlanetsToLoad.value = false;
       console.warn(`Next page url = ${next}, can't make the request...`);
     } else {
       haveMorePlanetsToLoad.value = true;
     }
-    if (noPreviousUrl) { // TODO: parse next to avoid checking against string value
+    if (noPreviousUrl) {
       havePreviousPlanetsToLoad.value = false;
       console.warn(`Previous page url = ${previous}, can't make the request...`);
     } else {
@@ -54,8 +54,8 @@ function makeRequest(url) {
   const data = getData(url);
   data.then((res) => {
     const { results, previous, next } = res;
-    const noNextUrl =  !next || next === 'null';
-    const noPreviousUrl = !previous || previous === 'null';
+    const noNextUrl =  !next || next === 'null'; // TODO: parse next to avoid checking against string value
+    const noPreviousUrl = !previous || previous === 'null'; // TODO: parse next to avoid checking against string value
     checkForPrevAndNextUrls(noPreviousUrl, previous, noNextUrl, next);
     mutateState(results, previous, next);
   })
