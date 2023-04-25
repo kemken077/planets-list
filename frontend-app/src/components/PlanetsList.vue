@@ -59,6 +59,7 @@ function checkForPrevAndNextUrls(noPreviousUrl, previous, noNextUrl, next) {
 function makeRequest(url) {
   const data = getData(url);
   areCTAButtonDisabled.value = true;
+  isLoading.value = true;
   data.then((res) => {
     const { results, previous, next } = res;
     const noNextUrl =  !next || next === 'null'; // TODO: parse next to avoid checking against string value
