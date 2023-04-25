@@ -88,13 +88,13 @@ function loadPlanetsData() {
 
 function getPreviousPlanets() {
   makeRequest(store.prevUrl);
-  const pageNumber = store.getCurrentPage - 1
+  const pageNumber = Number(store.getCurrentPage) - 1
   store.setCurrentPage(pageNumber);
 }
 
 function getNextPlanets() {
   makeRequest(store.nextUrl);
-  const pageNumber = store.getCurrentPage + 1;
+  const pageNumber = Number(store.getCurrentPage) + 1;
   store.setCurrentPage(pageNumber);
 }
 
