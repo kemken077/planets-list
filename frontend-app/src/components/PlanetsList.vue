@@ -14,6 +14,7 @@ const initialRequestUrl = 'https://swapi.dev/api/planets/';
 const haveMorePlanetsToLoad = ref(true);
 const havePreviousPlanetsToLoad = ref(false);
 const areCTAButtonDisabled = ref(false);
+const isLoading = ref(false);
 
 // Computed
 const planets = computed(() => {
@@ -61,6 +62,7 @@ function makeRequest(url) {
     checkForPrevAndNextUrls(noPreviousUrl, previous, noNextUrl, next);
     mutateState(results, previous, next);
     areCTAButtonDisabled.value = false;
+    isLoading.value = false;
   })
   .catch((e) => {
     console.error('Error: ', e);
@@ -75,6 +77,7 @@ function loadPlanetsData() {
   if (isDataStoragePopulated(storageType)) {
     getAvailableData();
   } else {
+    isLoading.value = true;
     requestData();
   }
 }
@@ -102,17 +105,19 @@ onMounted(() => {
 
 <template>
   <h1>{{ title }}</h1>
-  <div class="planets" v-if="isPlanetsArrayLengthLargerThanZero">
-    <PlanetsGrid :items="planets" />
-    <div class="more-wrapper" v-if="haveMorePlanetsToLoad">
-      <LoadButton :isDisabled="areCTAButtonDisabled" @load-clicked="getNextPlanets" :text="'next ->'" />
-    </div>
-    <div class="previous-wrapper" v-if="havePreviousPlanetsToLoad">
-      <LoadButton :isDisabled="areCTAButtonDisabled" @load-clicked="getPreviousPlanets" :text="'<- previous'" />
-    </div>
-  </div>
-  <div class="loading-wrapper" v-else>
+  <div class="loading-wrapper" v-if="isLoading">
     <LoadingMessage :message="'Loading...'" />
+  </div>
+  <div class="loaded-wrapper" v-else>
+    <div class="planets" v-if="isPlanetsArrayLengthLargerThanZero">
+      <PlanetsGrid :items="planets" />
+      <div class="more-wrapper" v-if="haveMorePlanetsToLoad">
+        <LoadButton :isDisabled="areCTAButtonDisabled" @load-clicked="getNextPlanets" :text="'next ->'" />
+      </div>
+      <div class="previous-wrapper" v-if="havePreviousPlanetsToLoad">
+        <LoadButton :isDisabled="areCTAButtonDisabled" @load-clicked="getPreviousPlanets" :text="'<- previous'" />
+      </div>
+    </div>
   </div>
 </template>
 

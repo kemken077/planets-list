@@ -15,5 +15,6 @@ export default {
 <style scoped>
 .loading p {
   color: #FFFFFF;
+  height: 100%;
 }
 </style>
