@@ -13,6 +13,7 @@ const title =  'Planets:';
 const initialRequestUrl = 'https://swapi.dev/api/planets/';
 const haveMorePlanetsToLoad = ref(true);
 const havePreviousPlanetsToLoad = ref(false);
+const areCTAButtonDisabled = ref(false);
 
 // Computed
 const planets = computed(() => {
@@ -52,12 +53,14 @@ function checkForPrevAndNextUrls(noPreviousUrl, previous, noNextUrl, next) {
 
 function makeRequest(url) {
   const data = getData(url);
+  areCTAButtonDisabled.value = true;
   data.then((res) => {
     const { results, previous, next } = res;
     const noNextUrl =  !next || next === 'null'; // TODO: parse next to avoid checking against string value
     const noPreviousUrl = !previous || previous === 'null'; // TODO: parse next to avoid checking against string value
     checkForPrevAndNextUrls(noPreviousUrl, previous, noNextUrl, next);
     mutateState(results, previous, next);
+    areCTAButtonDisabled.value = false;
   })
   .catch((e) => {
     console.error('Error: ', e);
@@ -102,10 +105,10 @@ onMounted(() => {
   <div class="planets" v-if="isPlanetsArrayLengthLargerThanZero">
     <PlanetsGrid :items="planets" />
     <div class="more-wrapper" v-if="haveMorePlanetsToLoad">
-      <LoadButton @load-clicked="getNextPlanets" :text="'+more'" />
+      <LoadButton :isDisabled="areCTAButtonDisabled" @load-clicked="getNextPlanets" :text="'next ->'" />
     </div>
     <div class="previous-wrapper" v-if="havePreviousPlanetsToLoad">
-      <LoadButton @load-clicked="getPreviousPlanets" :text="'-previous'" />
+      <LoadButton :isDisabled="areCTAButtonDisabled" @load-clicked="getPreviousPlanets" :text="'<- previous'" />
     </div>
   </div>
   <div class="loading-wrapper" v-else>

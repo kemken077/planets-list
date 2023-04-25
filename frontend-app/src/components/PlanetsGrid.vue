@@ -23,6 +23,7 @@ export default {
 
 <style scoped>
 ul {
+  width: 100%;
   list-style-type: none;
 }
 li {
