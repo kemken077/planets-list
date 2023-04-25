@@ -22,7 +22,6 @@ export default {
 .load {
   color: rgba(235, 235, 235, 0.64);
   background-color: #181818;
-  height: 100px;
   padding: 20px 10px;
 }
 .load:hover {
