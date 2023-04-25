@@ -121,4 +121,7 @@ h1 {
   margin-bottom: 30px;
   border-bottom: 1px solid pink;
 }
+.more-wrapper {
+  margin-top: 30px;
+}
 </style>
