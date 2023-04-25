@@ -15,6 +15,8 @@ const haveMorePlanetsToLoad = ref(true);
 const havePreviousPlanetsToLoad = ref(false);
 const areCTAButtonDisabled = ref(false);
 const isLoading = ref(false);
+const currentPage = ref(1);
+const totalPages = 6;
 
 // Computed
 const planets = computed(() => {
@@ -84,10 +86,12 @@ function loadPlanetsData() {
 
 function getPreviousPlanets() {
   makeRequest(store.prevUrl);
+  currentPage.value -= 1;
 }
 
 function getNextPlanets() {
   makeRequest(store.nextUrl);
+  currentPage.value += 1;
 }
 
 function urlIncludesProtocol(protocol, prev = true) {
@@ -104,7 +108,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <h1>{{ title }}</h1>
+  <h1>{{ title }} (<span class="current-page">{{ currentPage }}</span> / <span class="total-pages">{{ totalPages }}</span>)</h1>
   <div class="loading-wrapper" v-if="isLoading">
     <LoadingMessage :message="'Loading...'" />
   </div>
@@ -125,6 +129,10 @@ onMounted(() => {
 h1 {
   margin-bottom: 30px;
   border-bottom: 1px solid pink;
+}
+h1 .current-page {
+  color: white;
+  font-weight: bold;
 }
 .more-wrapper {
   margin-top: 30px;
