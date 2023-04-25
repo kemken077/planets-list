@@ -10,12 +10,19 @@ export default {
   mounted() {
     console.log(this.items);
   },
+  methods: {
+    handleClick(event, planet) {
+      console.log('Planet clicked!');
+      console.log({planet});
+
+    }
+  }
 }
 </script>
 
 <template>
   <ul>
-    <li v-for="(item, index) in items" :key="index">
+    <li v-for="(item, index) in items" :key="index" @click="handleClick(event, item)">
       <PlanetItem :name="item.name" />
     </li>
   </ul>
