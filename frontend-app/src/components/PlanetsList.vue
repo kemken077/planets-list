@@ -15,7 +15,6 @@ const haveMorePlanetsToLoad = ref(true);
 const havePreviousPlanetsToLoad = ref(false);
 const areCTAButtonDisabled = ref(false);
 const isLoading = ref(false);
-const currentPage = ref(1);
 const totalPages = 6;
 
 // Computed
@@ -26,17 +25,20 @@ const isPlanetsArrayLengthLargerThanZero = computed(() => {
   return store.planets.length > 0;
 });
 
-function mutateState(items, prevUrl, nextUrl) {
+function mutateState(items, prevUrl, nextUrl, checkForCurrentPage = false) {
   store.addItems(items, true);
   store.setUrl(prevUrl);
   store.setUrl(nextUrl, false);
+  if (checkForCurrentPage) {
+    store.setCurrentPage(sessionStorage.getItem('currentPage'));
+  }
 }
 
 function getAvailableData() {
   const storage = JSON.parse(sessionStorage.getItem('planets'));
   const prevUrl = sessionStorage.getItem('prevUrl');
   const nextUrl = sessionStorage.getItem('nextUrl');
-  mutateState(storage, prevUrl, nextUrl); // Hydrate state with sessionStorage data on page reload.
+  mutateState(storage, prevUrl, nextUrl, true); // Hydrate state with sessionStorage data on page reload.
 }
 
 function checkForPrevAndNextUrls(noPreviousUrl, previous, noNextUrl, next) {
@@ -86,12 +88,14 @@ function loadPlanetsData() {
 
 function getPreviousPlanets() {
   makeRequest(store.prevUrl);
-  currentPage.value -= 1;
+  const pageNumber = store.getCurrentPage - 1
+  store.setCurrentPage(pageNumber);
 }
 
 function getNextPlanets() {
   makeRequest(store.nextUrl);
-  currentPage.value += 1;
+  const pageNumber = store.getCurrentPage + 1;
+  store.setCurrentPage(pageNumber);
 }
 
 function urlIncludesProtocol(protocol, prev = true) {
@@ -108,7 +112,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <h1>{{ title }} (<span class="current-page">{{ currentPage }}</span> / <span class="total-pages">{{ totalPages }}</span>)</h1>
+  <h1>{{ title }} (<span class="current-page">{{ store.getCurrentPage }}</span> / <span class="total-pages">{{ totalPages }}</span>)</h1>
   <div class="loading-wrapper" v-if="isLoading">
     <LoadingMessage :message="'Loading...'" />
   </div>
